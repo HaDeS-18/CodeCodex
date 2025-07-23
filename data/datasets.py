@@ -50,12 +50,17 @@ def load_coder_eval():
             }
         ]
         
-        return pd.DataFrame(coder_eval_problems)
+        df = pd.DataFrame(coder_eval_problems)
+        # Convert list columns to strings to make DataFrame hashable
+        for col in df.columns:
+            if df[col].dtype == 'object' and len(df) > 0 and isinstance(df[col].iloc[0], list):
+                df[col] = df[col].apply(lambda x: str(x) if isinstance(x, list) else x)
+        return df
     except Exception as e:
         st.error(f"Error loading CoderEval: {e}")
         return pd.DataFrame()
 
-@st.cache_data  
+@st.cache_data
 def load_code_contests():
     """Load CodeContests dataset - Alternative to MBPP"""
     try:
@@ -103,7 +108,12 @@ def load_code_contests():
             }
         ]
         
-        return pd.DataFrame(sample_problems)
+        df = pd.DataFrame(sample_problems)
+        # Convert list columns to strings to make DataFrame hashable
+        for col in df.columns:
+            if df[col].dtype == 'object' and isinstance(df[col].iloc[0], list):
+                df[col] = df[col].apply(lambda x: str(x) if isinstance(x, list) else x)
+        return df
     except Exception as e:
         st.error(f"Error loading CodeContests: {e}")
         return pd.DataFrame()
@@ -146,7 +156,12 @@ def load_python_problems():
             }
         ]
         
-        return pd.DataFrame(python_exercises)
+        df = pd.DataFrame(python_exercises)
+        # Convert list columns to strings to make DataFrame hashable
+        for col in df.columns:
+            if df[col].dtype == 'object' and len(df) > 0 and isinstance(df[col].iloc[0], list):
+                df[col] = df[col].apply(lambda x: str(x) if isinstance(x, list) else x)
+        return df
     except Exception as e:
         st.error(f"Error loading Python Problems: {e}")
         return pd.DataFrame()
