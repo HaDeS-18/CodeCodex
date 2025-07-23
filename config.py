@@ -15,18 +15,18 @@ CACHE_DIR.mkdir(exist_ok=True)
 # API Configuration
 HUGGINGFACE_TOKEN = os.getenv("HUGGINGFACE_TOKEN", "")
 
-# Model Configuration
+# Model Configuration - Lightweight versions
 MODELS = {
-    "CodeLLaMA": "codellama/CodeLlama-7b-Python-hf",
-    "StarCoder": "bigcode/starcoder", 
-    "Replit Coder": "replit/replit-code-v1-3b"
+    "CodeLLaMA": "codellama/CodeLlama-7b-Python-hf",  # Keep 7B for now, we'll use quantized version
+    "StarCoder": "bigcode/starcoderbase-1b",          # Much smaller 1B version
+    "Replit Coder": "replit/replit-code-v1-3b"        # Keep 3B, it's reasonable
 }
 
-# Dataset Configuration
+# Dataset Configuration - Using free alternatives
 DATASETS = {
-    "HumanEval": "openai_humaneval",
-    "MBPP": "mbpp", 
-    "CodeXGLUE": "microsoft/CodeXGLUE-TT-text-to-text"
+    "CoderEval": "CoderEval/CoderEval",  # Alternative to HumanEval - real-world functions
+    "CodeContests": "deepmind/code_contests",  # Competitive programming problems
+    "Python Problems": "codeparrot/github-code-clean"  # Clean Python code examples
 }
 
 # Generation settings

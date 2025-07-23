@@ -5,8 +5,8 @@ import plotly.express as px
 import plotly.graph_objects as go
 from typing import Dict, Any
 
-def analyze_humaneval(df: pd.DataFrame) -> Dict[str, Any]:
-    """Analyze HumanEval dataset"""
+def analyze_coder_eval(df: pd.DataFrame) -> Dict[str, Any]:
+    """Analyze CoderEval dataset"""
     if df.empty:
         return {}
     
@@ -26,15 +26,15 @@ def analyze_humaneval(df: pd.DataFrame) -> Dict[str, Any]:
         difficulty_data, 
         x='Difficulty', 
         y='Count',
-        title='HumanEval Problem Difficulty Distribution',
+        title='CoderEval Problem Difficulty Distribution',
         color='Difficulty'
     )
     
     analysis['difficulty_chart'] = fig
     return analysis
 
-def analyze_mbpp(df: pd.DataFrame) -> Dict[str, Any]:
-    """Analyze MBPP dataset"""
+def analyze_code_contests(df: pd.DataFrame) -> Dict[str, Any]:
+    """Analyze CodeContests dataset"""
     if df.empty:
         return {}
     
@@ -53,14 +53,14 @@ def analyze_mbpp(df: pd.DataFrame) -> Dict[str, Any]:
         complexity_data,
         values='Count',
         names='Lines of Code', 
-        title='MBPP Code Complexity Distribution'
+        title='CodeContests Problem Complexity Distribution'
     )
     
     analysis['complexity_chart'] = fig
     return analysis
 
-def analyze_codexglue(df: pd.DataFrame) -> Dict[str, Any]:
-    """Analyze CodeXGLUE dataset"""
+def analyze_python_problems(df: pd.DataFrame) -> Dict[str, Any]:
+    """Analyze Python Problems dataset"""
     if df.empty:
         return {}
     
@@ -78,9 +78,9 @@ def analyze_codexglue(df: pd.DataFrame) -> Dict[str, Any]:
         task_data,
         x='Task',
         y='Samples',
-        title='CodeXGLUE Task Distribution'
+        title='Python Problems Difficulty Distribution'
     )
-    fig.update_xaxis(tickangle=45)
+    fig.update_layout(xaxis_tickangle=45)
     
     analysis['task_chart'] = fig
     return analysis
@@ -90,7 +90,7 @@ def create_overview_charts():
     
     # Dataset size comparison
     dataset_sizes = {
-        'Dataset': ['HumanEval', 'MBPP', 'CodeXGLUE'],
+        'Dataset': ['CoderEval', 'CodeContests', 'Python Problems'],
         'Size': [164, 1000, 8000],
         'Type': ['Evaluation', 'Training', 'Multi-task']
     }

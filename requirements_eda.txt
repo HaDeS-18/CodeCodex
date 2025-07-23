@@ -1,0 +1,20 @@
+# Additional requirements for EDA Analysis App
+# Install with: pip install -r requirements_eda.txt
+
+# Core data science libraries
+numpy>=1.21.0
+pandas>=1.3.0
+scikit-learn>=1.0.0
+seaborn>=0.11.0
+matplotlib>=3.4.0
+
+# Text analysis and NLP
+textstat>=0.7.0
+wordcloud>=1.8.0
+
+# Interactive visualization
+plotly>=5.0.0
+
+# Already included in main requirements but listing for completeness
+streamlit>=1.28.0
+requests>=2.25.0

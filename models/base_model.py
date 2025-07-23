@@ -17,7 +17,7 @@ class BaseModel(ABC):
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
     
     def load_model(self) -> bool:
-        """Load the model and tokenizer"""
+        """Load the model and tokenizer with optimizations for lighter hardware"""
         try:
             print(f"Loading {self.model_name}...")
             
@@ -30,13 +30,35 @@ class BaseModel(ABC):
             if self.tokenizer.pad_token is None:
                 self.tokenizer.pad_token = self.tokenizer.eos_token
             
+            # Optimized loading for lighter hardware
+            model_kwargs = {
+                "token": HUGGINGFACE_TOKEN,
+                "trust_remote_code": True,
+            }
+            
+            # Use lighter configuration based on available resources
+            if torch.cuda.is_available():
+                # GPU available - use float16 for memory efficiency
+                model_kwargs.update({
+                    "torch_dtype": torch.float16,
+                    "device_map": "auto",
+                    "low_cpu_mem_usage": True
+                })
+            else:
+                # CPU only - use even more aggressive optimizations
+                model_kwargs.update({
+                    "torch_dtype": torch.float32,
+                    "low_cpu_mem_usage": True
+                })
+            
             self.model = AutoModelForCausalLM.from_pretrained(
                 self.model_name,
-                token=HUGGINGFACE_TOKEN,
-                trust_remote_code=True,
-                torch_dtype=torch.float16 if self.device == "cuda" else torch.float32,
-                device_map="auto" if self.device == "cuda" else None
+                **model_kwargs
             )
+            
+            # Move to CPU if no GPU to avoid memory issues
+            if not torch.cuda.is_available():
+                self.model = self.model.to("cpu")
             
             self.is_loaded = True
             print(f"✅ {self.model_name} loaded successfully")

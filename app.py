@@ -8,8 +8,8 @@ from config import STREAMLIT_CONFIG, HUGGINGFACE_TOKEN, MODELS
 from models.codellama import CodeLLaMA
 from models.starcoder import StarCoder  
 from models.replit_coder import ReplitCoder
-from data.datasets import load_humaneval, load_mbpp, load_codexglue, get_dataset_info
-from data.eda import analyze_humaneval, analyze_mbpp, analyze_codexglue, create_overview_charts
+from data.datasets import load_coder_eval, load_code_contests, load_python_problems, get_dataset_info
+from data.eda import analyze_coder_eval, analyze_code_contests, analyze_python_problems, create_overview_charts
 from utils.helpers import display_model_info, format_code_output, create_model_comparison_table
 from utils.code_executor import execute_python_code, validate_code_safety
 
@@ -160,7 +160,7 @@ with tab1:
 with tab2:
     st.header("Dataset Analysis")
     
-    dataset_tab1, dataset_tab2, dataset_tab3, dataset_tab4 = st.tabs(["Overview", "HumanEval", "MBPP", "CodeXGLUE"])
+    dataset_tab1, dataset_tab2, dataset_tab3, dataset_tab4 = st.tabs(["Overview", "CoderEval", "CodeContests", "Python Problems"])
     
     with dataset_tab1:
         st.subheader("Dataset Overview")
@@ -169,30 +169,30 @@ with tab2:
         col1, col2, col3 = st.columns(3)
         
         with col1:
-            st.metric("HumanEval", "164", "Hand-written problems")
+            st.metric("CoderEval", "100+", "Real-world functions")
         with col2:
-            st.metric("MBPP", "1000+", "Crowd-sourced problems") 
+            st.metric("CodeContests", "5", "Sample problems") 
         with col3:
-            st.metric("CodeXGLUE", "Multiple", "Multi-task datasets")
+            st.metric("Python Problems", "5", "Programming exercises")
         
         # Overview chart
         overview_fig = create_overview_charts()
         st.plotly_chart(overview_fig, use_container_width=True)
     
-    with dataset_tab1:
-        st.subheader("HumanEval Analysis")
+    with dataset_tab2:
+        st.subheader("CoderEval Analysis")
         
-        with st.spinner("Loading HumanEval dataset..."):
-            humaneval_df = load_humaneval()
+        with st.spinner("Loading CoderEval dataset..."):
+            coder_eval_df = load_coder_eval()
             
-        if not humaneval_df.empty:
+        if not coder_eval_df.empty:
             # Dataset info
-            info = get_dataset_info(humaneval_df, "HumanEval")
+            info = get_dataset_info(coder_eval_df, "CoderEval")
             st.write(f"**Dataset Size:** {info['size']} problems")
             st.write(f"**Columns:** {', '.join(info['columns'])}")
             
             # Analysis
-            analysis = analyze_humaneval(humaneval_df)
+            analysis = analyze_coder_eval(coder_eval_df)
             if 'difficulty_chart' in analysis:
                 st.plotly_chart(analysis['difficulty_chart'], use_container_width=True)
             
@@ -201,20 +201,20 @@ with tab2:
                 st.subheader("Sample Problems")
                 st.dataframe(pd.DataFrame(info['sample']))
         else:
-            st.error("Failed to load HumanEval dataset")
+            st.error("Failed to load CoderEval dataset")
     
-    with dataset_tab2:
-        st.subheader("MBPP Analysis")
+    with dataset_tab3:
+        st.subheader("CodeContests Analysis")
         
-        with st.spinner("Loading MBPP dataset..."):
-            mbpp_df = load_mbpp()
+        with st.spinner("Loading CodeContests dataset..."):
+            code_contests_df = load_code_contests()
             
-        if not mbpp_df.empty:
-            info = get_dataset_info(mbpp_df, "MBPP")
+        if not code_contests_df.empty:
+            info = get_dataset_info(code_contests_df, "CodeContests")
             st.write(f"**Dataset Size:** {info['size']} problems")
             st.write(f"**Columns:** {', '.join(info['columns'])}")
             
-            analysis = analyze_mbpp(mbpp_df)
+            analysis = analyze_code_contests(code_contests_df)
             if 'complexity_chart' in analysis:
                 st.plotly_chart(analysis['complexity_chart'], use_container_width=True)
             
@@ -222,28 +222,28 @@ with tab2:
                 st.subheader("Sample Problems")
                 st.dataframe(pd.DataFrame(info['sample']))
         else:
-            st.error("Failed to load MBPP dataset")
+            st.error("Failed to load CodeContests dataset")
     
-    with dataset_tab3:
-        st.subheader("CodeXGLUE Analysis")
+    with dataset_tab4:
+        st.subheader("Python Problems Analysis")
         
-        with st.spinner("Loading CodeXGLUE dataset..."):
-            codexglue_df = load_codexglue()
+        with st.spinner("Loading Python Problems dataset..."):
+            python_problems_df = load_python_problems()
             
-        if not codexglue_df.empty:
-            info = get_dataset_info(codexglue_df, "CodeXGLUE")
-            st.write(f"**Dataset Size:** {info['size']} samples")
+        if not python_problems_df.empty:
+            info = get_dataset_info(python_problems_df, "Python Problems")
+            st.write(f"**Dataset Size:** {info['size']} exercises")
             st.write(f"**Columns:** {', '.join(info['columns'])}")
             
-            analysis = analyze_codexglue(codexglue_df)
+            analysis = analyze_python_problems(python_problems_df)
             if 'task_chart' in analysis:
                 st.plotly_chart(analysis['task_chart'], use_container_width=True)
             
             if info['sample']:
-                st.subheader("Sample Data")
+                st.subheader("Sample Exercises")
                 st.dataframe(pd.DataFrame(info['sample']))
         else:
-            st.error("Failed to load CodeXGLUE dataset")
+            st.error("Failed to load Python Problems dataset")
 
 with tab3:
     st.header("Model Comparison")
