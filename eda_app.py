@@ -9,15 +9,12 @@ import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-import seaborn as sns
-import matplotlib.pyplot as plt
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.cluster import KMeans
-from sklearn.decomposition import PCA
+
+
 from textstat import flesch_reading_ease, flesch_kincaid_grade
 import re
 from collections import Counter
-import ast
+
 from data.datasets import load_coder_eval, load_code_contests, load_python_problems
 
 # Page configuration
